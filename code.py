@@ -10,16 +10,12 @@ from digitalio import DigitalInOut, Direction, Pull
 from adafruit_crickit import crickit
 
 
-STEPS = 100                               # Number of steps to take
-SOUND_FILE = 'dino_roar.wav'              # Sound file to play
-IR_REMOTE_POWER = [255, 0, 93, 162]
+STEPS = 100                              # Number of steps to take
+SOUND_FILE = 'dino_roar.wav'             # Sound file to play
+IR_REMOTE_POWER = [255, 0, 93, 162]      # Code for power button on NEC remote
 
 led = DigitalInOut(board.D13)            # Set up Red LED
 led.direction = Direction.OUTPUT
-
-button_A = DigitalInOut(board.BUTTON_A)  # Set up switch A
-button_A.direction = Direction.INPUT
-button_A.pull = Pull.DOWN
 
 # Create servos list
 servos = [crickit.servo_1, crickit.servo_2]
@@ -84,7 +80,7 @@ def play_file(filename):
                 pass
     print("Finished playing: " + filename)
 
-print("It's TriceraBot Time")
+print("It's Tricerabot Time")
 
 bot_is_on = False
 
@@ -107,19 +103,19 @@ while True:
         led.value = True   # Turn on LED 13 to show we're gone!
         for i in range(STEPS):
             print("back 1")
-            # servo_back(1)
-            # time.sleep(0.100)
+            servo_back(1)
+            time.sleep(0.100)
             print("front 1")
-            # servo_front(1)
-            # time.sleep(0.100)
+            servo_front(1)
+            time.sleep(0.100)
             print("back 2")
-            # servo_back(-1)
-            # time.sleep(0.100)
+            servo_back(-1)
+            time.sleep(0.100)
             print("front 2")
-            # servo_front(-1)
-            # time.sleep(0.100)
-            # if i % 5 == 0:
-            #     play_file(SOUND_FILE)
+            servo_front(-1)
+            time.sleep(0.100)
+            if i % 5 == 0:
+                play_file(SOUND_FILE)
         led.value = False
     elif bot_is_on and received_code == IR_REMOTE_POWER:
         print("Stopping Tricerabot")
