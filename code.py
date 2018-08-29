@@ -100,6 +100,7 @@ while True:
         continue
 
     if not bot_is_on and received_code == IR_REMOTE_POWER:
+        bot_is_on = True
         led.value = True   # Turn on LED 13 to show we're gone!
         for i in range(STEPS):
             print("back 1")
@@ -118,5 +119,6 @@ while True:
                 play_file(SOUND_FILE)
         led.value = False
     elif bot_is_on and received_code == IR_REMOTE_POWER:
+        bot_is_on = False
         print("Stopping Tricerabot")
         
