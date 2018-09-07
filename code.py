@@ -2,20 +2,22 @@
 # See: https://learn.adafruit.com/stumble-bot-with-circuit-playground-and-crickit
 
 import adafruit_irremote
-import audioio
 import board
 import pulseio
 import time
+
 from digitalio import DigitalInOut, Direction, Pull
 from adafruit_crickit import crickit
 
-
 STEPS = 100                              # Number of steps to take
-SOUND_FILE = 'dino_roar.wav'             # Sound file to play
-IR_REMOTE_POWER = [255, 0, 93, 162]      # Code for power button on NEC remote
+IR_REMOTE_PLAY = [255, 0, 253, 2]        # NEC IR Remote 'Play/Pause' code
 
 led = DigitalInOut(board.D13)            # Set up Red LED
 led.direction = Direction.OUTPUT
+
+button_A = DigitalInOut(board.BUTTON_A)  # Set up switch A
+button_A.direction = Direction.INPUT
+button_A.pull = Pull.DOWN
 
 # Create servos list
 servos = [crickit.servo_1, crickit.servo_2]
@@ -27,11 +29,6 @@ servos[1].set_pulse_width_range(min_pulse=500, max_pulse=2500)
 # starting angle, middle
 servos[1].angle = 90
 servos[0].angle = 90
-
-# enable the speaker
-spkrenable = DigitalInOut(board.SPEAKER_ENABLE)
-spkrenable.direction = Direction.OUTPUT
-spkrenable.value = True
 
 # Create a 'pulseio' input, to listen to infrared signals on the IR receiver
 pulsein = pulseio.PulseIn(board.IR_RX, maxlen=120, idle_state=True)
@@ -69,20 +66,9 @@ def servo_back(direction):
             time.sleep(0.040)
             index = index - 4
     time.sleep(0.020)
-    
-def play_file(filename):
-    print("Playing file: " + filename)
-    wave_file = open(filename, "rb")
-    with audioio.WaveFile(wave_file) as wave:
-        with audioio.AudioOut(board.A0) as audio:
-            audio.play(wave)
-            while audio.playing:
-                pass
-    print("Finished playing: " + filename)
 
-print("It's Tricerabot Time")
 
-bot_is_on = False
+print("It's TriceraBot Time")
 
 while True:
     pulses = decoder.read_pulses(pulsein)
@@ -99,9 +85,9 @@ while True:
         print("Failed to decode: ", e.args)
         continue
 
-    if not bot_is_on and received_code == IR_REMOTE_POWER:
-        bot_is_on = True
-        led.value = True   # Turn on LED 13 to show we're gone!
+    # If IR Remote Play/Pause or Button A pushed, start!
+    if received_code == IR_REMOTE_PLAY:     
+        led.value = True            # Turn on LED 13 to show we're gone!
         for i in range(STEPS):
             print("back 1")
             servo_back(1)
@@ -115,10 +101,5 @@ while True:
             print("front 2")
             servo_front(-1)
             time.sleep(0.100)
-            if i % 5 == 0:
-                play_file(SOUND_FILE)
         led.value = False
-    elif bot_is_on and received_code == IR_REMOTE_POWER:
-        bot_is_on = False
-        print("Stopping Tricerabot")
         
