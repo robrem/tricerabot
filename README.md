@@ -1,6 +1,8 @@
 # Tricerabot
 A take on the Adafruit [Stumble Bot](https://learn.adafruit.com/stumble-bot-with-circuit-playground-and-crickit) using the [Circuit Playground Express](https://learn.adafruit.com/adafruit-circuit-playground-express) and [Crickit](https://learn.adafruit.com/adafruit-crickit-creative-robotic-interactive-construction-kit) controller boards.
 
+Dinosaur roar WAV from [Sound Bible](http://soundbible.com/tags-dinosaur-roar.html).
+
 ## Master branch
 This bot walks and roars like a dinosaur! 
 
